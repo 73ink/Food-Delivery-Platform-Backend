@@ -1,5 +1,6 @@
 package com.fooddelivery.DTO.response;
 
+import com.fooddelivery.DTO.summary.DriverSummaryDTO;
 import com.fooddelivery.Entities.Delivery;
 import lombok.*;
 
