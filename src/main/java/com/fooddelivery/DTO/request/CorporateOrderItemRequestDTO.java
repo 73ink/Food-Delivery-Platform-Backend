@@ -25,4 +25,5 @@ public class CorporateOrderItemRequestDTO {
         item.setSpecialInstructions(specialInstructions);
         return item;
     }
+
 }
