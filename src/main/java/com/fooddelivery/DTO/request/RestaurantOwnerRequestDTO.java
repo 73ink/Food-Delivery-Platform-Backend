@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-// Request DTO used when creating a restaurant owner.
+// Request DTO used when creating a restaurant owner
 @Getter
 @Setter
 public class RestaurantOwnerRequestDTO {
@@ -42,4 +42,3 @@ public class RestaurantOwnerRequestDTO {
         return owner;
     }
 }
-//Request DTO used when creating a restaurant owner.
