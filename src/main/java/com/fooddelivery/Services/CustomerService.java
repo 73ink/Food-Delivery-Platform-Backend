@@ -95,5 +95,70 @@ public class CustomerService {
         return CustomerResponseDTO.fromEntity(customer);
     }
 
+    // Add a new address to a customer.
+    @Transactional
+    public CustomerAddressResponseDTO addAddress(Integer customerId, CustomerAddressRequestDTO dto) {
+        Customer customer = findActiveCustomer(customerId);
+
+        // If the new address is default, remove default from old addresses.
+        if (Boolean.TRUE.equals(dto.getIsDefault())) {
+            List<CustomerAddress> oldAddresses = customerAddressRepository.findByCustomerId(customerId);
+
+            for (CustomerAddress address : oldAddresses) {
+                address.setIsDefault(false);
+                customerAddressRepository.save(address);
+            }
+        }
+
+        CustomerAddress address = dto.toEntity();
+        address.setCustomer(customer);
+
+        CustomerAddress savedAddress = customerAddressRepository.save(address);
+
+        return CustomerAddressResponseDTO.fromEntity(savedAddress);
+    }
+
+    // Get all addresses for a customer.
+    @Transactional(readOnly = true)
+    public List<CustomerAddressResponseDTO> getAddressesForCustomer(Integer customerId) {
+        findActiveCustomer(customerId);
+
+        return customerAddressRepository.findByCustomerId(customerId)
+                .stream()
+                .map(CustomerAddressResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Set one address as default.
+    @Transactional
+    public CustomerAddressResponseDTO setDefaultAddress(Integer addressId) {
+        CustomerAddress selectedAddress = customerAddressRepository.findActiveById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with ID: " + addressId));
+
+        Integer customerId = selectedAddress.getCustomer().getId();
+
+        List<CustomerAddress> addresses = customerAddressRepository.findByCustomerId(customerId);
+
+        for (CustomerAddress address : addresses) {
+            address.setIsDefault(false);
+            customerAddressRepository.save(address);
+        }
+
+        selectedAddress.setIsDefault(true);
+
+        CustomerAddress savedAddress = customerAddressRepository.save(selectedAddress);
+
+        return CustomerAddressResponseDTO.fromEntity(savedAddress);
+    }
+
+    // Soft delete customer address.
+    @Transactional
+    public void deleteAddress(Integer addressId) {
+        CustomerAddress address = customerAddressRepository.findActiveById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with ID: " + addressId));
+
+        address.setIsActive(false);
+        customerAddressRepository.save(address);
+    }
 
 }
