@@ -189,5 +189,41 @@ public class CustomerService {
         return CustomerResponseDTO.fromEntity(savedCustomer);
     }
 
+    // Partial profile update.
+    @Transactional
+    public CustomerResponseDTO patchCustomer(Integer customerId, CustomerPatchDTO dto) {
+        Customer customer = findActiveCustomer(customerId);
 
+        dto.applyTo(customer);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return CustomerResponseDTO.fromEntity(savedCustomer);
+    }
+
+    // Soft delete customer.
+    @Transactional
+    public void deactivateCustomer(Integer customerId) {
+        Customer customer = findActiveCustomer(customerId);
+
+        customer.setIsActive(false);
+
+        customerRepository.save(customer);
+    }
+
+    // Get orders for one customer.
+    @Transactional(readOnly = true)
+    public List<OrderResponseDTO> getOrdersForCustomer(Integer customerId) {
+        findActiveCustomer(customerId);
+
+        return orderRepository.findByCustomerId(customerId)
+                .stream()
+                .map(OrderResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Private helper method to avoid repeating the same lookup code.
+    private Customer findActiveCustomer(Integer customerId) {
+        return customerRepository.findActiveById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + customerId));
+    }
 }
