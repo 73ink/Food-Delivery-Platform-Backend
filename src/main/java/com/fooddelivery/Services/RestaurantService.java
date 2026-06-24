@@ -40,5 +40,27 @@ public class RestaurantService {
         return RestaurantResponseDTO.fromEntity(savedRestaurant);
     }
 
+    // Get all active restaurants.
+    @Transactional(readOnly = true)
+    public List<RestaurantResponseDTO> getAllRestaurants() {
+        return restaurantRepository.findAllActive()
+                .stream()
+                .map(RestaurantResponseDTO::fromEntity)
+                .toList();
+    }
 
+    // Get restaurant by ID.
+    @Transactional(readOnly = true)
+    public RestaurantResponseDTO getRestaurantById(Integer restaurantId) {
+        Restaurant restaurant = findActiveRestaurant(restaurantId);
+
+        return RestaurantResponseDTO.fromEntity(restaurant);
+    }
+
+
+    // Private helper method to avoid repeating restaurant lookup.
+    private Restaurant findActiveRestaurant(Integer restaurantId) {
+        return restaurantRepository.findActiveById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with ID: " + restaurantId));
+    }
 }
