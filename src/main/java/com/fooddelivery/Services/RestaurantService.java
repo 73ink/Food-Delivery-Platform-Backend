@@ -81,6 +81,15 @@ public class RestaurantService {
         return RestaurantResponseDTO.fromEntity(savedRestaurant);
     }
 
+    // Get restaurants by cuisine type.
+    @Transactional(readOnly = true)
+    public List<RestaurantResponseDTO> getRestaurantsByCuisine(String cuisine) {
+        return restaurantRepository.findByCuisineTypeIgnoreCase(cuisine)
+                .stream()
+                .map(RestaurantResponseDTO::fromEntity)
+                .toList();
+    }
+
 
 
     // Private helper method to avoid repeating restaurant lookup.
