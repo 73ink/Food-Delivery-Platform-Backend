@@ -36,4 +36,10 @@ public class RestaurantOwnerService {
     }
 
 
+
+    // Private helper method for active owner lookup.
+    private RestaurantOwner findActiveOwner(Integer ownerId) {
+        return restaurantOwnerRepository.findActiveById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant owner not found with ID: " + ownerId));
+    }
 }
