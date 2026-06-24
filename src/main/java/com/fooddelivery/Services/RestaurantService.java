@@ -139,6 +139,17 @@ public class RestaurantService {
                 .toList();
     }
 
+    // Soft delete restaurant.
+    @Transactional
+    public void deactivateRestaurant(Integer restaurantId) {
+        Restaurant restaurant = findActiveRestaurant(restaurantId);
+
+        restaurant.setIsActive(false);
+
+        restaurantRepository.save(restaurant);
+    }
+
+
 
     // Private helper method to avoid repeating restaurant lookup.
     private Restaurant findActiveRestaurant(Integer restaurantId) {
