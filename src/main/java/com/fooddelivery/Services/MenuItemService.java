@@ -36,5 +36,28 @@ public class MenuItemService {
         return MenuItemResponseDTO.fromEntity(savedItem);
     }
 
+    // Get menu item by ID.
+    @Transactional(readOnly = true)
+    public MenuItemResponseDTO getMenuItemById(Integer itemId) {
+        MenuItem item = findActiveMenuItem(itemId);
 
+        return MenuItemResponseDTO.fromEntity(item);
+    }
+
+    // Get all active menu items.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> getAllMenuItems() {
+        return menuItemRepository.findAllActive()
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
+
+
+
+    // Private helper method.
+    private MenuItem findActiveMenuItem(Integer itemId) {
+        return menuItemRepository.findActiveById(itemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with ID: " + itemId));
+    }
 }
