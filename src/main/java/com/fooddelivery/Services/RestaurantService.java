@@ -119,6 +119,25 @@ public class RestaurantService {
                 .toList();
     }
 
+    // Increase all menu item prices for one restaurant.
+    @Transactional
+    public List<MenuItemResponseDTO> bulkUpdateMenuItemPrices(Integer restaurantId, double percentageIncrease) {
+        findActiveRestaurant(restaurantId);
+
+        List<MenuItem> menuItems = menuItemRepository.findByRestaurantId(restaurantId);
+
+        for (MenuItem item : menuItems) {
+            double oldPrice = item.getPrice();
+            double newPrice = oldPrice + (oldPrice * percentageIncrease / 100);
+            item.setPrice(newPrice);
+            menuItemRepository.save(item);
+        }
+
+        return menuItemRepository.findByRestaurantId(restaurantId)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
 
 
     // Private helper method to avoid repeating restaurant lookup.
