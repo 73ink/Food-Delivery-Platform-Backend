@@ -161,4 +161,33 @@ public class CustomerService {
         customerAddressRepository.save(address);
     }
 
+    // Add loyalty points.
+    @Transactional
+    public CustomerResponseDTO updateLoyaltyPoints(Integer customerId, int points) {
+        Customer customer = findActiveCustomer(customerId);
+
+        int currentPoints = customer.getLoyaltyPoints() != null ? customer.getLoyaltyPoints() : 0;
+        customer.setLoyaltyPoints(currentPoints + points);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return CustomerResponseDTO.fromEntity(savedCustomer);
+    }
+
+    // Deduct loyalty points.
+    @Transactional
+    public CustomerResponseDTO applyLoyaltyPenalty(Integer customerId, int pointsDeducted) {
+        Customer customer = findActiveCustomer(customerId);
+
+        int currentPoints = customer.getLoyaltyPoints() != null ? customer.getLoyaltyPoints() : 0;
+        int newPoints = Math.max(0, currentPoints - pointsDeducted);
+
+        customer.setLoyaltyPoints(newPoints);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return CustomerResponseDTO.fromEntity(savedCustomer);
+    }
+
+
 }
