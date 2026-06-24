@@ -35,7 +35,32 @@ public class RestaurantOwnerService {
         return RestaurantOwnerResponseDTO.fromEntity(savedOwner);
     }
 
+    // Get all active restaurant owners.
+    @Transactional(readOnly = true)
+    public List<RestaurantOwnerResponseDTO> getAllOwners() {
+        return restaurantOwnerRepository.findAllActive()
+                .stream()
+                .map(RestaurantOwnerResponseDTO::fromEntity)
+                .toList();
+    }
 
+    // Get owner by ID.
+    @Transactional(readOnly = true)
+    public RestaurantOwnerResponseDTO getOwnerById(Integer ownerId) {
+        RestaurantOwner owner = findActiveOwner(ownerId);
+
+        return RestaurantOwnerResponseDTO.fromEntity(owner);
+    }
+
+    // Soft delete restaurant owner.
+    @Transactional
+    public void deactivateOwner(Integer ownerId) {
+        RestaurantOwner owner = findActiveOwner(ownerId);
+
+        owner.setIsActive(false);
+
+        restaurantOwnerRepository.save(owner);
+    }
 
     // Private helper method for active owner lookup.
     private RestaurantOwner findActiveOwner(Integer ownerId) {
