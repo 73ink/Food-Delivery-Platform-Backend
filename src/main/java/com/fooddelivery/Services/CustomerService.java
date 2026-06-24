@@ -48,5 +48,52 @@ public class CustomerService {
         return CustomerResponseDTO.fromEntity(savedCustomer);
     }
 
+    // Create customer with initial address.
+    @Transactional
+    public CustomerResponseDTO createCustomer(CustomerRequestDTO dto, CustomerAddressRequestDTO initialAddress) {
+
+        if (customerRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Customer email already exists");
+        }
+
+        Customer customer = dto.toEntity();
+        customer.setCustomerCode(HelperUtils.generateCode("CUST"));
+
+        CustomerAddress address = initialAddress.toEntity();
+        address.setCustomer(customer);
+        address.setIsDefault(true);
+
+        customer.getAddresses().add(address);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return CustomerResponseDTO.fromEntity(savedCustomer);
+    }
+
+    // Get all active customers.
+    @Transactional(readOnly = true)
+    public List<CustomerResponseDTO> getAllCustomers() {
+        return customerRepository.findAllActive()
+                .stream()
+                .map(CustomerResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get customer by ID.
+    @Transactional(readOnly = true)
+    public CustomerResponseDTO getCustomerById(Integer customerId) {
+        Customer customer = findActiveCustomer(customerId);
+        return CustomerResponseDTO.fromEntity(customer);
+    }
+
+    // Get customer by email.
+    @Transactional(readOnly = true)
+    public CustomerResponseDTO getCustomerByEmail(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with email: " + email));
+
+        return CustomerResponseDTO.fromEntity(customer);
+    }
+
 
 }
