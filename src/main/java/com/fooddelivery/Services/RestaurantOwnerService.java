@@ -62,6 +62,12 @@ public class RestaurantOwnerService {
         restaurantOwnerRepository.save(owner);
     }
 
+    // This helper will also be used later by RestaurantService.
+    @Transactional(readOnly = true)
+    public RestaurantOwner findOwnerEntityById(Integer ownerId) {
+        return findActiveOwner(ownerId);
+    }
+
     // Private helper method for active owner lookup.
     private RestaurantOwner findActiveOwner(Integer ownerId) {
         return restaurantOwnerRepository.findActiveById(ownerId)
