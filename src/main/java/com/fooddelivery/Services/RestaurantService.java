@@ -90,6 +90,15 @@ public class RestaurantService {
                 .toList();
     }
 
+    // Get restaurants with delivery fee under or equal to a specific amount.
+    @Transactional(readOnly = true)
+    public List<RestaurantResponseDTO> getRestaurantsUnderDeliveryFee(double maxFee) {
+        return restaurantRepository.findByDeliveryFeeLessThanEqual(maxFee)
+                .stream()
+                .map(RestaurantResponseDTO::fromEntity)
+                .toList();
+    }
+
 
 
     // Private helper method to avoid repeating restaurant lookup.
