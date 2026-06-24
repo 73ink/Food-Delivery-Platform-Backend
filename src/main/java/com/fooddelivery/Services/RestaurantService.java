@@ -69,6 +69,18 @@ public class RestaurantService {
         return RestaurantResponseDTO.fromEntity(savedRestaurant);
     }
 
+    // Update restaurant delivery fee.
+    @Transactional
+    public RestaurantResponseDTO updateDeliveryFee(Integer restaurantId, double newFee) {
+        Restaurant restaurant = findActiveRestaurant(restaurantId);
+
+        restaurant.setDeliveryFee(newFee);
+
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+
+        return RestaurantResponseDTO.fromEntity(savedRestaurant);
+    }
+
 
 
     // Private helper method to avoid repeating restaurant lookup.
