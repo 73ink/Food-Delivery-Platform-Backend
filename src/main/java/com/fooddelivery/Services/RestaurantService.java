@@ -99,6 +99,26 @@ public class RestaurantService {
                 .toList();
     }
 
+    // Search restaurant by name keyword.
+    @Transactional(readOnly = true)
+    public List<RestaurantResponseDTO> searchRestaurantsByKeyword(String keyword) {
+        return restaurantRepository.searchByNameKeyword(keyword)
+                .stream()
+                .map(RestaurantResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get menu items for a restaurant.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> getMenuForRestaurant(Integer restaurantId) {
+        findActiveRestaurant(restaurantId);
+
+        return menuItemRepository.findByRestaurantId(restaurantId)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
+
 
 
     // Private helper method to avoid repeating restaurant lookup.
