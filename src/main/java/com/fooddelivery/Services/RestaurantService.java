@@ -57,6 +57,19 @@ public class RestaurantService {
         return RestaurantResponseDTO.fromEntity(restaurant);
     }
 
+    // Toggle accepting orders true/false.
+    @Transactional
+    public RestaurantResponseDTO toggleAcceptingOrders(Integer restaurantId, boolean status) {
+        Restaurant restaurant = findActiveRestaurant(restaurantId);
+
+        restaurant.setAcceptingOrders(status);
+
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+
+        return RestaurantResponseDTO.fromEntity(savedRestaurant);
+    }
+
+
 
     // Private helper method to avoid repeating restaurant lookup.
     private Restaurant findActiveRestaurant(Integer restaurantId) {
