@@ -149,7 +149,11 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
-
+    // Helper method for other services.
+    @Transactional(readOnly = true)
+    public Restaurant findRestaurantEntityById(Integer restaurantId) {
+        return findActiveRestaurant(restaurantId);
+    }
 
     // Private helper method to avoid repeating restaurant lookup.
     private Restaurant findActiveRestaurant(Integer restaurantId) {
