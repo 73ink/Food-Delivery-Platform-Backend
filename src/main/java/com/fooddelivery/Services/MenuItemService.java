@@ -53,6 +53,23 @@ public class MenuItemService {
                 .toList();
     }
 
+    // Get all menu items for one restaurant.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> getMenuItemsByRestaurant(Integer restaurantId) {
+        return menuItemRepository.findByRestaurantId(restaurantId)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get available menu items for one restaurant.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> getAvailableMenuItemsByRestaurant(Integer restaurantId) {
+        return menuItemRepository.findByRestaurantIdAndIsAvailableTrue(restaurantId)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
 
 
     // Private helper method.
