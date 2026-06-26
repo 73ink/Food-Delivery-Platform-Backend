@@ -289,7 +289,46 @@ public class OrderService {
                 .toList();
     }
 
+    // Create corporate order.
+    @Transactional
+    public CorporateOrderResponseDTO placeCorporateOrder(CorporateOrderRequestDTO dto) {
 
+        Restaurant restaurant = restaurantRepository.findActiveById(dto.getRestaurantId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with ID: " + dto.getRestaurantId()));
+
+        CorporateOrder corporateOrder = dto.toEntity();
+        corporateOrder.setCorporateCode(HelperUtils.generateCode("CORP", 6));
+        corporateOrder.setRestaurant(restaurant);
+
+        CorporateOrder savedCorporateOrder = corporateOrderRepository.save(corporateOrder);
+
+        double totalAmount = 0.0;
+
+        for (CorporateOrderItemRequestDTO itemDTO : dto.getItems()) {
+            MenuItem menuItem = menuItemRepository.findActiveById(itemDTO.getMenuItemId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with ID: " + itemDTO.getMenuItemId()));
+
+            if (!Boolean.TRUE.equals(menuItem.getIsAvailable())) {
+                throw new InvalidOrderStateException("Menu item is not available: " + menuItem.getName());
+            }
+
+            CorporateOrderItem item = itemDTO.toEntity();
+            item.setCorporateOrder(savedCorporateOrder);
+            item.setMenuItem(menuItem);
+            item.setUnitPrice(menuItem.getPrice());
+            item.setTotalPrice(menuItem.getPrice() * itemDTO.getQuantity());
+
+            totalAmount += item.getTotalPrice();
+
+            corporateOrderItemRepository.save(item);
+        }
+
+        savedCorporateOrder.setTotalAmount(totalAmount);
+
+        CorporateOrder finalCorporateOrder = corporateOrderRepository.save(savedCorporateOrder);
+
+        return CorporateOrderResponseDTO.fromEntity(finalCorporateOrder);
+    }
 
     // Helper method for DeliveryService and PaymentService.
     @Transactional(readOnly = true)
