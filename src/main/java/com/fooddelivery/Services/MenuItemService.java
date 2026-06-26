@@ -132,6 +132,11 @@ public class MenuItemService {
                 .toList();
     }
 
+    // Helper method for other services.
+    @Transactional(readOnly = true)
+    public MenuItem findMenuItemEntityById(Integer itemId) {
+        return findActiveMenuItem(itemId);
+    }
 
     // Private helper method.
     private MenuItem findActiveMenuItem(Integer itemId) {
