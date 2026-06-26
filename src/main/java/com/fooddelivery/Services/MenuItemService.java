@@ -71,6 +71,16 @@ public class MenuItemService {
                 .toList();
     }
 
+    // Get vegetarian menu items.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> getVegetarianMenuItems() {
+        return menuItemRepository.findByIsVegetarianTrue()
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
+
+
 
     // Private helper method.
     private MenuItem findActiveMenuItem(Integer itemId) {
