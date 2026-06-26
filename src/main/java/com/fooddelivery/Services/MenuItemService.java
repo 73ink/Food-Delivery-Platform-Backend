@@ -113,6 +113,15 @@ public class MenuItemService {
         return MenuItemResponseDTO.fromEntity(savedItem);
     }
 
+    // Soft delete menu item.
+    @Transactional
+    public void deleteMenuItem(Integer itemId) {
+        MenuItem item = findActiveMenuItem(itemId);
+
+        item.setIsActive(false);
+
+        menuItemRepository.save(item);
+    }
 
 
 
