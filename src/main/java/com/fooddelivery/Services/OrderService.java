@@ -226,6 +226,42 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(savedOrder);
     }
 
+    // Recalculate subtotal, delivery fee, discount, and total.
+    @Transactional
+    public OrderResponseDTO calculateOrderTotals(Integer orderId) {
+        Order order = findActiveOrder(orderId);
+
+        List<OrderItem> activeItems = orderItemRepository.findByOrderId(orderId);
+
+        double subtotal = 0.0;
+
+        for (OrderItem item : activeItems) {
+            subtotal += item.getTotalPrice();
+        }
+
+        double deliveryFee = order.getRestaurant().getDeliveryFee() != null
+                ? order.getRestaurant().getDeliveryFee()
+                : 0.0;
+
+        double discount = order.getDiscountAmount() != null
+                ? order.getDiscountAmount()
+                : 0.0;
+
+        double total = HelperUtils.calculateTotal(subtotal, deliveryFee, discount);
+
+        if (total < 0) {
+            total = 0.0;
+        }
+
+        order.setSubtotal(subtotal);
+        order.setDeliveryFee(deliveryFee);
+        order.setDiscountAmount(discount);
+        order.setTotalAmount(total);
+
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderResponseDTO.fromEntity(savedOrder);
+    }
 
 
     // Helper method for DeliveryService and PaymentService.
