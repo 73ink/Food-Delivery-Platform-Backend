@@ -61,6 +61,55 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(savedOrder);
     }
 
+    // Create order with items and no notes.
+    @Transactional
+    public OrderResponseDTO createOrder(Integer customerId, Integer restaurantId, List<OrderItemRequestDTO> items) {
+        return createOrder(customerId, restaurantId, items, null);
+    }
+
+    // Create order with items and delivery notes.
+    @Transactional
+    public OrderResponseDTO createOrder(
+            Integer customerId,
+            Integer restaurantId,
+            List<OrderItemRequestDTO> items,
+            String notes
+    ) {
+        Customer customer = customerRepository.findActiveById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + customerId));
+
+        Restaurant restaurant = restaurantRepository.findActiveById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with ID: " + restaurantId));
+
+        if (!Boolean.TRUE.equals(restaurant.getAcceptingOrders())) {
+            throw new InvalidOrderStateException("Restaurant is not accepting orders right now");
+        }
+
+        Order order = new Order();
+        order.setOrderCode(HelperUtils.generateCode("ORD", 6));
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus("PENDING");
+        order.setSubtotal(0.0);
+        order.setDeliveryFee(restaurant.getDeliveryFee());
+        order.setDiscountAmount(0.0);
+        order.setTotalAmount(0.0);
+        order.setDeliveryNotes(notes);
+        order.setCustomer(customer);
+        order.setRestaurant(restaurant);
+
+        Order savedOrder = orderRepository.save(order);
+
+        // Add every requested item to the order.
+        for (OrderItemRequestDTO itemDTO : items) {
+            addMenuItemEntityToOrder(savedOrder, itemDTO.getMenuItemId(), itemDTO.getQuantity(), itemDTO.getSpecialInstructions());
+        }
+
+        calculateOrderTotals(savedOrder.getId());
+
+        Order updatedOrder = findActiveOrder(savedOrder.getId());
+
+        return OrderResponseDTO.fromEntity(updatedOrder);
+    }
 
 
     // Helper method for DeliveryService and PaymentService.
