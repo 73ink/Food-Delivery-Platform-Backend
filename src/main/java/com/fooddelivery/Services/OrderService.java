@@ -61,4 +61,57 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(savedOrder);
     }
 
+
+
+    // Helper method for DeliveryService and PaymentService.
+    @Transactional(readOnly = true)
+    public Order findOrderEntityById(Integer orderId) {
+        return findActiveOrder(orderId);
+    }
+
+    // Private helper to add item entity to order.
+    private void addMenuItemEntityToOrder(Order order, Integer menuItemId, int quantity, String specialInstructions) {
+
+        if (quantity < 1) {
+            throw new InvalidOrderStateException("Quantity must be at least 1");
+        }
+
+        MenuItem menuItem = menuItemRepository.findActiveById(menuItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with ID: " + menuItemId));
+
+        if (!Boolean.TRUE.equals(menuItem.getIsAvailable())) {
+            throw new InvalidOrderStateException("Menu item is not available: " + menuItem.getName());
+        }
+
+        if (!menuItem.getRestaurant().getId().equals(order.getRestaurant().getId())) {
+            throw new InvalidOrderStateException("Menu item does not belong to the selected restaurant");
+        }
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setMenuItem(menuItem);
+        orderItem.setQuantity(quantity);
+        orderItem.setUnitPrice(menuItem.getPrice());
+        orderItem.setTotalPrice(menuItem.getPrice() * quantity);
+        orderItem.setSpecialInstructions(specialInstructions);
+
+        orderItemRepository.save(orderItem);
+    }
+
+    // Private helper method for active order lookup.
+    private Order findActiveOrder(Integer orderId) {
+        return orderRepository.findActiveById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+    }
+
+    // Validate allowed order statuses.
+    private boolean isValidOrderStatus(String status) {
+        return status.equals("PENDING")
+                || status.equals("CONFIRMED")
+                || status.equals("PREPARING")
+                || status.equals("READY")
+                || status.equals("OUT_FOR_DELIVERY")
+                || status.equals("DELIVERED")
+                || status.equals("CANCELLED");
+    }
 }
