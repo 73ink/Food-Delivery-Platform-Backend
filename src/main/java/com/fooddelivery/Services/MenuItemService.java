@@ -80,7 +80,14 @@ public class MenuItemService {
                 .toList();
     }
 
-
+    // Get menu items between two prices.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> getMenuItemsByPriceRange(double min, double max) {
+        return menuItemRepository.findByPriceBetween(min, max)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
 
     // Private helper method.
     private MenuItem findActiveMenuItem(Integer itemId) {
