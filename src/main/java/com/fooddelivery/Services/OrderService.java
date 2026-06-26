@@ -176,6 +176,56 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(updatedOrder);
     }
 
+    // Confirm order means no more items can be added.
+    @Transactional
+    public OrderResponseDTO confirmOrder(Integer orderId) {
+        Order order = findActiveOrder(orderId);
+
+        if (!"PENDING".equalsIgnoreCase(order.getStatus())) {
+            throw new InvalidOrderStateException("Only PENDING orders can be confirmed");
+        }
+
+        order.setStatus("CONFIRMED");
+
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderResponseDTO.fromEntity(savedOrder);
+    }
+
+    // Update order status.
+    @Transactional
+    public OrderResponseDTO updateOrderStatus(Integer orderId, String newStatus) {
+        Order order = findActiveOrder(orderId);
+
+        String formattedStatus = newStatus.toUpperCase();
+
+        if (!isValidOrderStatus(formattedStatus)) {
+            throw new InvalidOrderStateException("Invalid order status: " + newStatus);
+        }
+
+        order.setStatus(formattedStatus);
+
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderResponseDTO.fromEntity(savedOrder);
+    }
+
+    // Cancel order only if it is PENDING.
+    @Transactional
+    public OrderResponseDTO cancelOrder(Integer orderId) {
+        Order order = findActiveOrder(orderId);
+
+        if (!"PENDING".equalsIgnoreCase(order.getStatus())) {
+            throw new InvalidOrderStateException("Only PENDING orders can be cancelled");
+        }
+
+        order.setStatus("CANCELLED");
+
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderResponseDTO.fromEntity(savedOrder);
+    }
+
 
 
     // Helper method for DeliveryService and PaymentService.
