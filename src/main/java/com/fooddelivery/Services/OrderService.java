@@ -263,6 +263,33 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(savedOrder);
     }
 
+    // Get order by ID.
+    @Transactional(readOnly = true)
+    public OrderResponseDTO getOrderById(Integer orderId) {
+        Order order = findActiveOrder(orderId);
+
+        return OrderResponseDTO.fromEntity(order);
+    }
+
+    // Get orders for a restaurant filtered by status.
+    @Transactional(readOnly = true)
+    public List<OrderResponseDTO> getOrdersByRestaurantAndStatus(Integer restaurantId, String status) {
+        return orderRepository.findByRestaurantIdAndStatus(restaurantId, status)
+                .stream()
+                .map(OrderResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get all orders for a customer.
+    @Transactional(readOnly = true)
+    public List<OrderResponseDTO> getOrdersByCustomer(Integer customerId) {
+        return orderRepository.findByCustomerId(customerId)
+                .stream()
+                .map(OrderResponseDTO::fromEntity)
+                .toList();
+    }
+
+
 
     // Helper method for DeliveryService and PaymentService.
     @Transactional(readOnly = true)
