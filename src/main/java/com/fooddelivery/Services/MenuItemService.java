@@ -123,6 +123,14 @@ public class MenuItemService {
         menuItemRepository.save(item);
     }
 
+    // Cross-restaurant menu item search.
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> searchMenuItems(String keyword, Integer minCalories, Integer maxCalories) {
+        return menuItemRepository.searchMenuItems(keyword, minCalories, maxCalories)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
 
 
     // Private helper method.
