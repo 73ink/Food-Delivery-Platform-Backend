@@ -89,6 +89,33 @@ public class MenuItemService {
                 .toList();
     }
 
+    // Mark item available or unavailable.
+    @Transactional
+    public MenuItemResponseDTO updateAvailability(Integer itemId, boolean status) {
+        MenuItem item = findActiveMenuItem(itemId);
+
+        item.setIsAvailable(status);
+
+        MenuItem savedItem = menuItemRepository.save(item);
+
+        return MenuItemResponseDTO.fromEntity(savedItem);
+    }
+
+    // Update menu item details.
+    @Transactional
+    public MenuItemResponseDTO updateMenuItem(Integer itemId, MenuItemRequestDTO dto) {
+        MenuItem item = findActiveMenuItem(itemId);
+
+        dto.applyTo(item);
+
+        MenuItem savedItem = menuItemRepository.save(item);
+
+        return MenuItemResponseDTO.fromEntity(savedItem);
+    }
+
+
+
+
     // Private helper method.
     private MenuItem findActiveMenuItem(Integer itemId) {
         return menuItemRepository.findActiveById(itemId)
