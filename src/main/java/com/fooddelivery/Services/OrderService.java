@@ -111,6 +111,72 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(updatedOrder);
     }
 
+    // Add a menu item to an existing order.
+    @Transactional
+    public OrderResponseDTO addMenuItemToOrder(Integer orderId, Integer menuItemId, int quantity) {
+        Order order = findActiveOrder(orderId);
+
+        // Items can only be added while order is still pending.
+        if (!"PENDING".equalsIgnoreCase(order.getStatus())) {
+            throw new InvalidOrderStateException("Items can only be added to a PENDING order");
+        }
+
+        addMenuItemEntityToOrder(order, menuItemId, quantity, null);
+
+        calculateOrderTotals(orderId);
+
+        Order updatedOrder = findActiveOrder(orderId);
+
+        return OrderResponseDTO.fromEntity(updatedOrder);
+    }
+
+    // Remove an order item using soft delete.
+    @Transactional
+    public void removeMenuItemFromOrder(Integer orderId, Integer orderItemId) {
+        Order order = findActiveOrder(orderId);
+
+        if (!"PENDING".equalsIgnoreCase(order.getStatus())) {
+            throw new InvalidOrderStateException("Items can only be removed from a PENDING order");
+        }
+
+        OrderItem orderItem = orderItemRepository.findActiveById(orderItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order item not found with ID: " + orderItemId));
+
+        if (!orderItem.getOrder().getId().equals(order.getId())) {
+            throw new InvalidOrderStateException("This item does not belong to the selected order");
+        }
+
+        orderItem.setIsActive(false);
+        orderItemRepository.save(orderItem);
+
+        calculateOrderTotals(orderId);
+    }
+
+    // Apply discount to an order.
+    @Transactional
+    public OrderResponseDTO applyDiscount(Integer orderId, double discountAmount) {
+        Order order = findActiveOrder(orderId);
+
+        if (discountAmount < 0) {
+            throw new InvalidOrderStateException("Discount amount cannot be negative");
+        }
+
+        if (discountAmount > order.getSubtotal()) {
+            throw new InvalidOrderStateException("Discount cannot be greater than subtotal");
+        }
+
+        order.setDiscountAmount(discountAmount);
+
+        Order savedOrder = orderRepository.save(order);
+
+        calculateOrderTotals(savedOrder.getId());
+
+        Order updatedOrder = findActiveOrder(orderId);
+
+        return OrderResponseDTO.fromEntity(updatedOrder);
+    }
+
+
 
     // Helper method for DeliveryService and PaymentService.
     @Transactional(readOnly = true)
