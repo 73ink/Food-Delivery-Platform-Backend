@@ -118,6 +118,11 @@ public class ComboMealService {
         comboMealRepository.save(comboMeal);
     }
 
+    // Helper method for other services.
+    @Transactional(readOnly = true)
+    public ComboMeal findComboMealEntityById(Integer comboId) {
+        return findActiveComboMeal(comboId);
+    }
 
     // Private helper method.
     private ComboMeal findActiveComboMeal(Integer comboId) {
