@@ -96,6 +96,27 @@ public class ComboMealService {
                 .toList();
     }
 
+    // Mark combo meal available or unavailable.
+    @Transactional
+    public ComboMealResponseDTO updateAvailability(Integer comboId, boolean status) {
+        ComboMeal comboMeal = findActiveComboMeal(comboId);
+
+        comboMeal.setIsAvailable(status);
+
+        ComboMeal savedComboMeal = comboMealRepository.save(comboMeal);
+
+        return ComboMealResponseDTO.fromEntity(savedComboMeal);
+    }
+
+    // Soft delete combo meal.
+    @Transactional
+    public void deleteComboMeal(Integer comboId) {
+        ComboMeal comboMeal = findActiveComboMeal(comboId);
+
+        comboMeal.setIsActive(false);
+
+        comboMealRepository.save(comboMeal);
+    }
 
 
     // Private helper method.
