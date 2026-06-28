@@ -52,6 +52,50 @@ public class ComboMealService {
         return ComboMealResponseDTO.fromEntity(savedComboMeal);
     }
 
+    // Get combo meal by ID.
+    @Transactional(readOnly = true)
+    public ComboMealResponseDTO getComboMealById(Integer comboId) {
+        ComboMeal comboMeal = findActiveComboMeal(comboId);
+
+        return ComboMealResponseDTO.fromEntity(comboMeal);
+    }
+
+    // Get all combo meals.
+    @Transactional(readOnly = true)
+    public List<ComboMealResponseDTO> getAllComboMeals() {
+        return comboMealRepository.findAllActive()
+                .stream()
+                .map(ComboMealResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get all combo meals for one restaurant.
+    @Transactional(readOnly = true)
+    public List<ComboMealResponseDTO> getComboMealsByRestaurant(Integer restaurantId) {
+        return comboMealRepository.findByRestaurantId(restaurantId)
+                .stream()
+                .map(ComboMealResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get available combo meals for one restaurant.
+    @Transactional(readOnly = true)
+    public List<ComboMealResponseDTO> getAvailableComboMealsByRestaurant(Integer restaurantId) {
+        return comboMealRepository.findByRestaurantIdAndIsAvailableTrue(restaurantId)
+                .stream()
+                .map(ComboMealResponseDTO::fromEntity)
+                .toList();
+    }
+
+    // Get combo meals that contain a specific menu item.
+    @Transactional(readOnly = true)
+    public List<ComboMealResponseDTO> getComboMealsContainingMenuItem(Integer menuItemId) {
+        return comboMealRepository.findComboMealsContainingMenuItem(menuItemId)
+                .stream()
+                .map(ComboMealResponseDTO::fromEntity)
+                .toList();
+    }
+
 
 
     // Private helper method.
