@@ -1,4 +1,4 @@
-package com.fooddelivery.DTO.response;
+package com.fooddelivery.DTO.summary;
 
 import com.fooddelivery.Entities.Customer;
 import lombok.*;
