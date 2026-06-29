@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- This makes the page responsive on mobile and laptop screens -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Food Delivery Platform</title>
+
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Header section -->
+<header class="main-header">
+    <div>
+        <h1>Food Delivery Platform</h1>
+        <p>Simple front-end client connected to my Spring Boot REST API</p>
+    </div>
+</header>
+
+<!-- Navigation buttons -->
+<nav class="nav-tabs">
+    <button onclick="showSection('restaurantsSection')">Restaurants</button>
+    <button onclick="showSection('cartSection')">Menu & Cart</button>
+    <button onclick="showSection('trackingSection')">Order Tracking</button>
+    <button onclick="showSection('dashboardSection')">Dashboard</button>
+</nav>
+
+<main class="container">
+
+    <!-- ================= RESTAURANT BROWSE SECTION ================= -->
+    <section id="restaurantsSection" class="page-section active-section">
+        <div class="section-title">
+            <h2>Restaurant Browse</h2>
+            <p>Search restaurants and view their menu items.</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="restaurantKeyword" placeholder="Search by restaurant name">
+            <input type="text" id="cuisineFilter" placeholder="Cuisine type, example: Arabic">
+            <button onclick="loadRestaurants()">Load Restaurants</button>
+            <button onclick="searchRestaurants()">Search</button>
+            <button onclick="filterByCuisine()">Filter Cuisine</button>
+        </div>
+
+        <p id="restaurantMessage" class="message"></p>
+
+        <div id="restaurantsList" class="card-grid">
+            <!-- Restaurants will be loaded here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- ================= MENU AND CART SECTION ================= -->
+    <section id="cartSection" class="page-section">
+        <div class="section-title">
+            <h2>Menu & Cart</h2>
+            <p>Select menu items, add them to cart, and create an order.</p>
+        </div>
+
+        <div class="two-column">
+
+            <!-- Menu list -->
+            <div class="panel">
+                <h3>Selected Restaurant Menu</h3>
+                <p id="selectedRestaurantText">No restaurant selected yet.</p>
+                <div id="menuList">
+                    <!-- Menu items will appear here -->
+                </div>
+            </div>
+
+            <!-- Cart -->
+            <div class="panel">
+                <h3>Cart</h3>
+
+                <label for="customerIdInput">Customer ID</label>
+                <input type="number" id="customerIdInput" placeholder="Example: 1">
+
+                <div id="cartItems">
+                    <!-- Cart items will appear here -->
+                </div>
+
+                <div class="cart-total">
+                    <p>Subtotal: <strong id="cartSubtotal">0.000 OMR</strong></p>
+                </div>
+
+                <button onclick="placeOrder()">Place Order</button>
+
+                <p id="cartMessage" class="message"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= ORDER TRACKING SECTION ================= -->
+    <section id="trackingSection" class="page-section">
+        <div class="section-title">
+            <h2>Order Tracking</h2>
+            <p>Track order status and delivery progress.</p>
+        </div>
+
+        <div class="panel">
+            <label for="trackingOrderId">Order ID</label>
+            <input type="number" id="trackingOrderId" placeholder="Example: 1">
+
+            <div class="button-row">
+                <button onclick="trackOrder()">Track Order</button>
+                <button onclick="startAutoTracking()">Start Auto Refresh</button>
+                <button onclick="stopAutoTracking()">Stop Auto Refresh</button>
+            </div>
+
+            <p id="trackingMessage" class="message"></p>
+
+            <div id="orderTrackingResult" class="tracking-card">
+                <!-- Order tracking details will appear here -->
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-step" id="stepPending">PENDING</div>
+                <div class="progress-step" id="stepPreparing">PREPARING</div>
+                <div class="progress-step" id="stepReady">READY</div>
+                <div class="progress-step" id="stepDelivered">DELIVERED</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= ADMIN DASHBOARD SECTION ================= -->
+    <section id="dashboardSection" class="page-section">
+        <div class="section-title">
+            <h2>Admin / Reporting Dashboard</h2>
+            <p>Simple reports from the backend reporting APIs.</p>
+        </div>
+
+        <div class="dashboard-controls">
+            <input type="number" id="reportRestaurantId" placeholder="Restaurant ID, example: 1">
+            <input type="date" id="reportDate">
+            <button onclick="loadDashboardReports()">Load Reports</button>
+        </div>
+
+        <p id="dashboardMessage" class="message"></p>
+
+        <div class="dashboard-grid">
+
+            <div class="report-card">
+                <h3>Daily Summary</h3>
+                <div id="dailySummaryReport">No data loaded yet.</div>
+            </div>
+
+            <div class="report-card">
+                <h3>Restaurant Revenue</h3>
+                <div id="restaurantRevenueReport">No data loaded yet.</div>
+            </div>
+
+            <div class="report-card">
+                <h3>Top Loyalty Customers</h3>
+                <div id="topCustomersReport">No data loaded yet.</div>
+            </div>
+
+            <div class="report-card">
+                <h3>Drivers Leaderboard</h3>
+                <div id="driversLeaderboardReport">No data loaded yet.</div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>Food Delivery Platform Front-End | Spring Boot REST API Client</p>
+</footer>
+
+<!-- Link to the JavaScript file -->
+<script src="app.js"></script>
+</body>
+</html>
