@@ -1,4 +1,9 @@
 package com.fooddelivery.Exceptions;
 
-public class ResourceNotFoundException {
+// Used when an entity is not found or when it is soft-deleted.
+public class ResourceNotFoundException extends RuntimeException {
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
 }
