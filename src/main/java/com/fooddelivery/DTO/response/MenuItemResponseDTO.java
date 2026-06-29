@@ -1,5 +1,6 @@
 package com.fooddelivery.DTO.response;
 
+import com.fooddelivery.DTO.summary.RestaurantSummaryDTO;
 import com.fooddelivery.Entities.MenuItem;
 import lombok.*;
 
