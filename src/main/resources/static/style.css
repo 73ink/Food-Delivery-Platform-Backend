@@ -1,0 +1,286 @@
+/* ================= GENERAL PAGE STYLE ================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7f5f0;
+    color: #222;
+}
+
+/* ================= HEADER ================= */
+
+.main-header {
+    background: linear-gradient(135deg, #3b2f2f, #8b5e34);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.main-header p {
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+/* ================= NAVIGATION ================= */
+
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: #ffffff;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs button {
+    margin: 6px;
+    padding: 10px 18px;
+    border: none;
+    background-color: #8b5e34;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.nav-tabs button:hover {
+    background-color: #6f4826;
+}
+
+/* ================= MAIN CONTAINER ================= */
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+.page-section {
+    display: none;
+}
+
+.active-section {
+    display: block;
+}
+
+.section-title {
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    margin-bottom: 5px;
+    color: #3b2f2f;
+}
+
+.section-title p {
+    color: #666;
+}
+
+/* ================= INPUTS AND BUTTONS ================= */
+
+input {
+    width: 100%;
+    padding: 11px;
+    margin: 6px 0 12px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    background-color: #3b2f2f;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 4px 4px 4px 0;
+}
+
+button:hover {
+    background-color: #5c4545;
+}
+
+.search-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.button-row {
+    margin: 10px 0;
+}
+
+/* ================= CARDS ================= */
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    background-color: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #3b2f2f;
+}
+
+.card p {
+    margin: 7px 0;
+    color: #555;
+}
+
+.card .small-text {
+    font-size: 13px;
+    color: #777;
+}
+
+/* ================= MENU AND CART ================= */
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background-color: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.menu-item {
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.cart-total {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #f4eee6;
+    border-radius: 10px;
+}
+
+/* ================= TRACKING ================= */
+
+.tracking-card {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f4eee6;
+    border-radius: 12px;
+}
+
+.progress-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.progress-step {
+    background-color: #ddd;
+    padding: 12px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.progress-step.active {
+    background-color: #8b5e34;
+    color: white;
+    font-weight: bold;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.report-card {
+    background-color: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.report-card h3 {
+    margin-top: 0;
+    color: #3b2f2f;
+}
+
+/* ================= MESSAGES ================= */
+
+.message {
+    font-weight: bold;
+    color: #8b5e34;
+}
+
+.error-message {
+    color: #b00020;
+}
+
+.success-message {
+    color: #1f7a1f;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #3b2f2f;
+    color: white;
+    margin-top: 40px;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+
+@media (max-width: 800px) {
+    .search-box,
+    .two-column,
+    .dashboard-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-container {
+        grid-template-columns: 1fr;
+    }
+}
